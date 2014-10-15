@@ -5,8 +5,9 @@ EC2 resources for use in courses, workshops, bootcamps, and hackathons.
 # Instructions
 **WARNING:** Do **NOT** run this code on a production system!
 
-The first time, simply run:
+The first time, simply run the following on an Ubuntu (BCE) system:
 
+    sudo apt-get install -y python-boto
     ./provision.py
 
 And then check your [AWS console IAM
