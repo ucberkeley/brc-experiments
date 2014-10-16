@@ -5,6 +5,12 @@ EC2 resources for use in courses, workshops, bootcamps, and hackathons.
 # Instructions
 **WARNING:** Do **NOT** run this code on a production system!
 
+Set up your AWS credentials with boto by copying the example and
+replacing with your own credentials:
+
+    cp -i .boto.example ~/.boto
+    chmod 400 ~/.boto
+
 The first time, simply run the following on an Ubuntu (BCE) system:
 
     sudo apt-get install -y python-boto
