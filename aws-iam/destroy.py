@@ -28,6 +28,7 @@ def destroy(target):
             for k in access_keys:
                 response = iam.delete_access_key(k.access_key_id, k.user_name)
                 iam.remove_user_from_group(group, u.user_name)
+                iam.delete_login_profile(u.user_name)
                 iam.delete_user(u.user_name)
         response = iam.get_all_group_policies(group)
         policies = response.policy_names

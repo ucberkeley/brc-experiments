@@ -4,6 +4,11 @@ import os.path
 import json
 import boto
 import csv
+import string
+import random
+
+def random_string(size=10, chars=string.letters + string.digits + string.punctuation):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 def create_iam_users(target, category):
     email_file = os.path.join(target, category + '.list')
@@ -24,15 +29,23 @@ def create_iam_users(target, category):
         response = iam.create_access_key(e)
         access_key = response.access_key_id
         secret_key = response.secret_access_key
+        password = random_string()
+        response = iam.create_login_profile(e, password)
+        # response = iam.create_login_profile(e, password, password_reset_required=True)
+        ### The password_reset_required is a new feature in a pull
+        ### request waiting to be merged:
+        ### https://github.com/boto/boto/pull/2578
+
         data.append({
             'username' : e,
             'access_key' : access_key,
             'secret_key' : secret_key,
+            'password' : password,
         })
     return data
 
 def save_credentials(target, category, creds):
-    keys = ['username', 'access_key', 'secret_key']
+    keys = ['username', 'access_key', 'secret_key', 'password']
     f = open(os.path.join(target, category + '.csv'), 'wb')
     dict_writer = csv.DictWriter(f, keys, delimiter='\t')
     dict_writer.writer.writerow(keys)
