@@ -16,6 +16,7 @@ def create_iam_users(target, category):
     response = iam.create_group(group)
     response = iam.put_group_policy(group, category + '-policy', policy)
 
+    data = []
     for e in email_addresses:
         response = iam.create_user(e)
         user = response.user
@@ -23,9 +24,19 @@ def create_iam_users(target, category):
         response = iam.create_access_key(e)
         access_key = response.access_key_id
         secret_key = response.secret_access_key
+        data.append({
+            'username' : e,
+            'access_key' : access_key,
+            'secret_key' : secret_key,
+        })
+    return data
 
 def save_credentials(target, category, creds):
-    pass
+    keys = ['username', 'access_key', 'secret_key']
+    f = open(os.path.join(target, category + '.csv'), 'wb')
+    dict_writer = csv.DictWriter(f, keys, delimiter='\t')
+    dict_writer.writer.writerow(keys)
+    dict_writer.writerows(creds)
 
 def provision(target):
     for category in ['instructors','students']:

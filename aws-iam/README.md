@@ -33,6 +33,6 @@ Currently in iterative testing mode on a non-production AWS instance
 - [X] create groups with corresponding policy attached
 - [X] provision users in instructor group
 - [X] provision users in student group
-- [ ] save credentials for all users
+- [X] save credentials for all users
 - [ ] script for student to self-start EC2 instance with Spark AMI from laptop BCE VM
 - [ ] stricter student policy allowing even more limited EC2 access
