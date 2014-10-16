@@ -30,11 +30,7 @@ def create_iam_users(target, category):
         access_key = response.access_key_id
         secret_key = response.secret_access_key
         password = random_string()
-        response = iam.create_login_profile(e, password)
-        # response = iam.create_login_profile(e, password, password_reset_required=True)
-        ### The password_reset_required is a new feature in a pull
-        ### request waiting to be merged:
-        ### https://github.com/boto/boto/pull/2578
+        response = iam.create_login_profile(e, password, password_reset_required=True)
 
         data.append({
             'username' : e,
