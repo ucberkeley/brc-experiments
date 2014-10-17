@@ -9,6 +9,8 @@ import random
 import logging
 import re
 
+from iampolicies import apply_policy
+
 def random_string(size=10, chars=string.letters + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
@@ -47,13 +49,13 @@ def create_signin_url(target):
 def create_iam_users(target, category):
     email_file = os.path.join(target, category + '.list')
     email_addresses = [r[0] for r in csv.reader(open(email_file))]
-    policy_file = os.path.join(target, category + '-policy.json')
-    policy = json.dumps(json.load(open(policy_file)))
 
     iam = boto.connect_iam()
     group = target + '-' + category
     response = iam.create_group(group)
-    response = iam.put_group_policy(group, category + '-policy', policy)
+    resources = ['ec2', 'home']
+    for r in resources:
+        response = apply_policy(group, category + '-' + r)
 
     data = []
     for e in email_addresses:
