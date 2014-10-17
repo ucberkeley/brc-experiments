@@ -34,6 +34,6 @@ Currently in iterative testing mode on a non-production AWS instance
 - [X] provision users in instructor group
 - [X] provision users in student group
 - [X] save credentials for all users
-- [ ] create alias for login url - Issue #2
+- [X] create alias for login url - Issue #2
 - [ ] script for student to self-start EC2 instance with Spark AMI from laptop BCE VM
 - [ ] stricter student policy allowing even more limited EC2 access

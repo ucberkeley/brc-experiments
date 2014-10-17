@@ -18,6 +18,14 @@ import json
 raise RuntimeError("DANGER! I warned you once... Don't run this script.")
 def destroy(target):
     response = iam = boto.connect_iam()
+    try:
+        response = alias = iam.get_account_alias().account_aliases
+        if alias:
+            iam.delete_account_alias(alias[0])
+    except Exception:
+        # if there was an exception, then the account didn't have an alias
+        pass
+
     for category in ['instructors','students']:
         group = target + '-' + category
         response = iam.get_group(group)
