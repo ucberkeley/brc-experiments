@@ -55,5 +55,11 @@ Currently in iterative testing mode on a non-production AWS instance
 - [X] provision users in student group
 - [X] save credentials for all users
 - [X] create alias for login url - Issue #2
+- [ ] send temporary password and force changing password at first login
+- [ ] distribute credentials via protected S3 bucket only available after password change at first login
 - [ ] script for student to self-start EC2 instance with Spark AMI from laptop BCE VM
 - [ ] stricter student policy allowing even more limited EC2 access
+  - [ ] Max instance runtime: 4 hours
+  - [ ] At most 13 EC2 instances: 1 master, 12 slaves
+  - [ ] default instance type for Spark: 8GB, 2 core
+  - [ ] allow optional instance types up to a limit of: 16GB, 8 cores
