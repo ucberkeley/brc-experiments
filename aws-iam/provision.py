@@ -13,10 +13,27 @@ def random_string(size=10, chars=string.letters + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 def create_signin_url(target):
+    # The script will also attempt to create a sign-in alias based on the
+    # course name, with the following behavior:
+    #
+    # - If your account already has an alias it will leave the existing
+    #   alias in place, it will _not_ overwrite it.
+    #
+    # - If the alias you chose is already in use, then it will use the
+    #   default signin url.
+    #
+    # [Limitations on IAM Entities](http://docs.aws.amazon.com/IAM/latest/UserGuide/LimitationsOnEntities.html) says:
+    #
+    # - AWS account ID aliases must be unique across AWS products, and must
+    #   be alphanumeric following DNS naming conventions. An alias must be
+    #   lowercase, it must not start or end with a hyphen, it cannot contain
+    #   two consecutive hyphens, and it cannot be a 12 digit number.
+    #
+    # - AWS account ID alias: 3 to 63 characters.
+    #
+    # - AWS account aliases per AWS account: 1
+
     iam = boto.connect_iam()
-    # Note: account aliases must be GLOBALLY unique across the entire
-    # AWS sign-in alias namespace and there is nothing that prevents
-    # someone from registering the same alias.
     signin_url = "https://{}.signin.aws.amazon.com/console/".format(iam.get_user().user.user_id)
     try:
         response = iam.create_account_alias(target)

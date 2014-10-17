@@ -23,6 +23,26 @@ provisioned
 [groups](https://console.aws.amazon.com/iam/home?#groups),
 and [policies](https://console.aws.amazon.com/iam/home?#groups/cloud101-fall-2014-students).
 
+The script will also attempt to create a sign-in alias based on the
+course name, with the following behavior:
+
+- If your account already has an alias it will leave the existing
+  alias in place, it will _not_ overwrite it.
+
+- If the alias you chose is already in use, then it will use the
+  default signin url.
+
+[Limitations on IAM Entities](http://docs.aws.amazon.com/IAM/latest/UserGuide/LimitationsOnEntities.html) says:
+
+- AWS account ID aliases must be unique across AWS products, and must
+  be alphanumeric following DNS naming conventions. An alias must be
+  lowercase, it must not start or end with a hyphen, it cannot contain
+  two consecutive hyphens, and it cannot be a 12 digit number.
+
+- AWS account ID alias: 3 to 63 characters.
+
+- AWS account aliases per AWS account: 1
+
 Currently in iterative testing mode on a non-production AWS instance
 
     clear; ./destroy.py && ./provision.py
