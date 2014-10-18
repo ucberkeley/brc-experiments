@@ -8,6 +8,7 @@ import string
 import random
 import logging
 import re
+import uuid
 
 from iampolicies import apply_policy
 
@@ -93,7 +94,11 @@ def save_credentials(target, category, creds):
 def provision(target):
     create_signin_url(target)
     s3 = boto.connect_s3()
-    bucket = s3.create_bucket(target)
+    ## create bucket names with uniquify suffix
+    ## Further details: https://github.com/ucberkeley/brc-experiments/issues/4
+    uniquify = 'uq' + str(uuid.uuid4())[:5]
+    bucket_name = target + '-' + uniquify
+    bucket = s3.create_bucket(bucket_name)
     for category in ['instructors','students']:
         creds = create_iam_users(target, category)
         save_credentials(target, category, creds)
