@@ -46,7 +46,7 @@ def create_signin_url(target):
     except boto.exception.BotoServerError, response:
         logging.warn(response.body)
 
-    logging.info('Using default sign-in url: {}'.format(signin_url))
+    print 'Sign-in url: {}'.format(signin_url)
 
 credentials_template = """
 [Credentials]
@@ -114,12 +114,14 @@ def save_credentials(target, category, creds):
     dict_writer.writerows(creds)
 
 def provision(target):
-    create_signin_url(target)
+    uniquify = '-uq' + str(uuid.uuid4())[:5]
+    uq = target + uniquify
+    bucket_name = uq
+    signin_url = uq
+    create_signin_url(signin_url)
     s3 = boto.s3.connect_to_region(DEFAULT_REGION)
     ## create bucket names with uniquify suffix
     ## Further details: https://github.com/ucberkeley/brc-experiments/issues/4
-    uniquify = 'uq' + str(uuid.uuid4())[:5]
-    bucket_name = target + '-' + uniquify
     s3.create_bucket(bucket_name, location=DEFAULT_REGION)
     for category in ['instructors','students']:
         creds = create_iam_users(target, category, bucket_name)
