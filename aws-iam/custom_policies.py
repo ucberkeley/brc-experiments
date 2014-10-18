@@ -12,26 +12,15 @@ def formatstring_json_escape(s):
 policy_template = {
 'students-ec2': '''
 {
-    "Version": "2012-10-17",
-    "Statement": [
-	{
-	    "Effect": "Allow",
-	    "Action": "ec2:RunInstances",
-	    "Resource": "arn:aws:ec2:us-west-2::image/ami-3d50120d"
-	},
-	{
-	    "Effect": "Allow",
-	    "Action": [
-		"ec2:Describe*",
-		"ec2:StartInstances",
-		"ec2:StopInstances",
-		"ec2:TerminateInstances"
-	    ],
-	    "Resource": "*"
-	}
-    ]
-}
-''',
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "ec2:*",
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}''',
 'students-home': '''
 {
   "Version":"2012-10-17",

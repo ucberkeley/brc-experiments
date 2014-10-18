@@ -11,7 +11,7 @@
 - [ ] force changing password at first login
 - [ ] send temporary password
 - [ ] script for student to self-start EC2 instance with Spark AMI from laptop BCE VM
-- [ ] stricter student policy allowing even more limited EC2 access
+- [ ] stricter student policy allowing even more limited EC2 access -[Issue #8](https://github.com/ucberkeley/brc-experiments/issues/8)
   - [ ] Max instance runtime: 4 hours
   - [ ] At most 13 EC2 instances: 1 master, 12 slaves
   - [ ] default instance type for Spark: 8GB, 2 core
