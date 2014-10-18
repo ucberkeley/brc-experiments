@@ -26,6 +26,26 @@ def destroy(target):
         # if there was an exception, then the account didn't have an alias
         pass
 
+    response = s3 = boto.connect_s3()
+    bucket = s3.get_bucket(target)
+    keys = bucket.list()
+    bucket.delete_keys([k.name for k in keys])
+
+    ### The delete_bucket is intentionally commented out because the
+    ### delete behavior is surprising relative to other delete
+    ### operations in the API. Creating a bucket with the same name as
+    ### one that has been deleted may not even be possible in some
+    ### cases. Typically it takes a few hours for the bucket names to
+    ### be cleared so in practice it is often possible to create a new
+    ### bucket with the same name. Read more at:
+    ###    http://psykidellic.github.io/posts/amazon-s3---careful-with-bucket-names/
+    ###    https://forums.aws.amazon.com/thread.jspa?threadID=37532
+    ### Interestingly, create_bucket does not behave as expected,
+    ### either; if a bucket already exists, the call to create_bucket
+    ### does not raise an exception about a duplicate
+    ### already existing.
+    # s3.delete_bucket(target)
+
     for category in ['instructors','students']:
         group = target + '-' + category
         response = iam.get_group(group)

@@ -57,6 +57,9 @@ def create_iam_users(target, category):
     for r in resources:
         response = apply_policy(group, category + '-' + r)
 
+    s3 = boto.connect_s3()
+    bucket = s3.get_bucket(target)
+
     data = []
     for e in email_addresses:
         response = iam.create_user(e)
@@ -89,6 +92,8 @@ def save_credentials(target, category, creds):
 
 def provision(target):
     create_signin_url(target)
+    s3 = boto.connect_s3()
+    bucket = s3.create_bucket(target)
     for category in ['instructors','students']:
         creds = create_iam_users(target, category)
         save_credentials(target, category, creds)
