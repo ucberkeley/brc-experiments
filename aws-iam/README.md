@@ -1,3 +1,22 @@
+# TODO
+- [X] default student policy allowing limited EC2 access
+- [X] default instructor policy allowing full account access
+- [X] create groups with corresponding policy attached
+- [X] provision users in instructor group
+- [X] provision users in student group
+- [X] save credentials for all users
+- [X] create alias for login url - [Issue #2](https://github.com/ucberkeley/brc-experiments/issues/2)
+- [X] set us-west-2 (Oregon) as default region for UC Berkeley - [Issue #5](https://github.com/ucberkeley/brc-experiments/issues/5)
+- [X] distribute credentials via protected S3 bucket only available after password change at first login
+- [ ] force changing password at first login
+- [ ] send temporary password
+- [ ] script for student to self-start EC2 instance with Spark AMI from laptop BCE VM
+- [ ] stricter student policy allowing even more limited EC2 access
+  - [ ] Max instance runtime: 4 hours
+  - [ ] At most 13 EC2 instances: 1 master, 12 slaves
+  - [ ] default instance type for Spark: 8GB, 2 core
+  - [ ] allow optional instance types up to a limit of: 16GB, 8 cores
+
 # Use Case
 Provision a set of users in AWS IAM with limited delegated access to
 EC2 resources for use in courses, workshops, bootcamps, and hackathons.
@@ -46,22 +65,3 @@ course name, with the following behavior:
 Currently in iterative testing mode on a non-production AWS instance
 
     clear; ./destroy.py && ./provision.py
-
-# TODO
-- [X] default student policy allowing limited EC2 access
-- [X] default instructor policy allowing full account access
-- [X] create groups with corresponding policy attached
-- [X] provision users in instructor group
-- [X] provision users in student group
-- [X] save credentials for all users
-- [X] create alias for login url - Issue #2
-- [X] set us-west-2 (Oregon) as default region for UC Berkeley - Issue #7
-- [X] distribute credentials via protected S3 bucket only available after password change at first login
-- [ ] force changing password at first login
-- [ ] send temporary password
-- [ ] script for student to self-start EC2 instance with Spark AMI from laptop BCE VM
-- [ ] stricter student policy allowing even more limited EC2 access
-  - [ ] Max instance runtime: 4 hours
-  - [ ] At most 13 EC2 instances: 1 master, 12 slaves
-  - [ ] default instance type for Spark: 8GB, 2 core
-  - [ ] allow optional instance types up to a limit of: 16GB, 8 cores
