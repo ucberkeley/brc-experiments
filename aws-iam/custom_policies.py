@@ -96,9 +96,10 @@ import boto
 import json
 import logging
 
-def apply_policy(group, policy_name):
+def apply_policy(group, policy_name, bucket_name):
     logging.debug(policy_template[policy_name])
     iam = boto.connect_iam()
-    policy = json.dumps(json.loads(formatstring_json_escape(policy_template[policy_name]).format(bucket=group)))
+    formatted = formatstring_json_escape(policy_template[policy_name]).format(bucket=bucket_name)
+    policy = json.dumps(json.loads(formatted), sort_keys=True, indent=4)
     response = iam.put_group_policy(group, policy_name, policy)
     return response

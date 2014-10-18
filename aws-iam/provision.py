@@ -2,7 +2,7 @@
 
 import os.path
 import json
-import boto
+import boto, boto.iam, boto.s3, boto.ec2
 import csv
 import string
 import random
@@ -10,7 +10,7 @@ import logging
 import re
 import uuid
 
-from iampolicies import apply_policy
+from custom_policies import apply_policy
 from ucb_defaults import DEFAULT_REGION
 
 def random_string(size=10, chars=string.letters + string.digits):
@@ -48,7 +48,15 @@ def create_signin_url(target):
 
     logging.info('Using default sign-in url: {}'.format(signin_url))
 
-def create_iam_users(target, category):
+credentials_template = """
+[Credentials]
+aws_access_key_id = {}
+aws_secret_access_key = {}
+ssh_key_filename = {}
+ssh_key_fingerprint = {}
+"""
+
+def create_iam_users(target, category, bucket_name):
     email_file = os.path.join(target, category + '.list')
     email_addresses = [r[0] for r in csv.reader(open(email_file))]
 
@@ -57,19 +65,32 @@ def create_iam_users(target, category):
     response = iam.create_group(group)
     resources = ['ec2', 'home']
     for r in resources:
-        response = apply_policy(group, category + '-' + r)
+        response = apply_policy(group, category + '-' + r, bucket_name)
 
     s3 = boto.s3.connect_to_region(DEFAULT_REGION)
-    bucket = s3.get_bucket(target)
+    bucket = s3.get_bucket(bucket_name)
 
     data = []
     for e in email_addresses:
         response = iam.create_user(e)
-        user = response.user
         response = iam.add_user_to_group(group, e)
         response = iam.create_access_key(e)
         access_key = response.access_key_id
         secret_key = response.secret_access_key
+        ec2 = boto.ec2.connect_to_region(DEFAULT_REGION)
+        ssh_key_name = e + ':' + target
+        ssh_key_filename = target + '-ssh_key.pem'
+        credentials_filename = target + '-credentials.boto'
+        ssh_key = ec2.create_key_pair(ssh_key_name)
+        credentials = credentials_template.format(access_key, secret_key, ssh_key_filename, ssh_key.fingerprint)
+        home = "home/{}/".format(e)
+        key = bucket.new_key(home)
+        path = home + credentials_filename
+        key = bucket.new_key(path)
+        key.set_contents_from_string(credentials)
+        path = home + ssh_key_filename
+        key = bucket.new_key(path)
+        key.set_contents_from_string(ssh_key.material)
         password = random_string()
         response = iam.create_login_profile(e, password)
         # response = iam.create_login_profile(e, password, password_reset_required=True)
@@ -94,14 +115,14 @@ def save_credentials(target, category, creds):
 
 def provision(target):
     create_signin_url(target)
-    s3 = boto.connect_s3()
+    s3 = boto.s3.connect_to_region(DEFAULT_REGION)
     ## create bucket names with uniquify suffix
     ## Further details: https://github.com/ucberkeley/brc-experiments/issues/4
     uniquify = 'uq' + str(uuid.uuid4())[:5]
     bucket_name = target + '-' + uniquify
-    bucket = s3.create_bucket(bucket_name)
+    s3.create_bucket(bucket_name, location=DEFAULT_REGION)
     for category in ['instructors','students']:
-        creds = create_iam_users(target, category)
+        creds = create_iam_users(target, category, bucket_name)
         save_credentials(target, category, creds)
 
 if __name__ == '__main__':

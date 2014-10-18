@@ -12,7 +12,7 @@
 # deprovision an IAM environment for experimenting with building a
 # safe way to provision and deprovision IAM accounts.
 
-import boto
+import boto, boto.iam, boto.s3, boto.ec2
 import json
 from ucb_defaults import DEFAULT_REGION
 
@@ -27,31 +27,50 @@ def destroy(target):
         # if there was an exception, then the account didn't have an alias
         pass
 
+    ec2 = boto.ec2.connect_to_region(DEFAULT_REGION)
+    for k in ec2.get_all_key_pairs():
+        response = ec2.delete_key_pair(k.name)
+
     response = s3 = boto.s3.connect_to_region(DEFAULT_REGION)
     ## only delete bucket names created with uniquify suffix
     ## Further details: https://github.com/ucberkeley/brc-experiments/issues/4
-    for b in s3.get_all_buckets():
-        if b.name.contains('-uq'):
-            b.delete_keys([k.name for k in b.list()])
-            s3.delete_bucket(b.name)
-
+    try:
+        for b in s3.get_all_buckets():
+            if '-uq' in b.name:
+                try:
+                    b.delete_keys([k.name for k in b.get_all_keys()])
+                except Exception, e:
+                    pass
+                try:
+                    s3.delete_bucket(b.name)
+                except Exception, e:
+                    pass
+    except Exception, e:
+        print e
+        pass
     for category in ['instructors','students']:
         group = target + '-' + category
-        response = iam.get_group(group)
-        users = response.users
-        for u in users:
-            response = iam.get_all_access_keys(u.user_name)
-            access_keys = response.access_key_metadata
-            for k in access_keys:
-                response = iam.delete_access_key(k.access_key_id, k.user_name)
+        try:
+            response = iam.get_group(group)
+        except Exception:
+            response = None
+            pass
+        if response:
+            users = response.users
+            for u in users:
+                for k in iam.get_all_access_keys(u.user_name).access_key_metadata:
+                    response = iam.delete_access_key(k.access_key_id, k.user_name)
+                response = iam.create_access_key(u.user_name)
+                for k in iam.get_all_access_keys(u.user_name).access_key_metadata:
+                    response = iam.delete_access_key(k.access_key_id, k.user_name)
                 iam.remove_user_from_group(group, u.user_name)
                 iam.delete_login_profile(u.user_name)
                 iam.delete_user(u.user_name)
-        response = iam.get_all_group_policies(group)
-        policies = response.policy_names
-        for p in policies:
-            response = iam.delete_group_policy(group, p)
-        response = iam.delete_group(group)
+            response = iam.get_all_group_policies(group)
+            policies = response.policy_names
+            for p in policies:
+                response = iam.delete_group_policy(group, p)
+            response = iam.delete_group(group)
 
 if __name__ == '__main__':
     target = 'cloud101-fall-2014'

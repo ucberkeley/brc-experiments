@@ -56,8 +56,9 @@ Currently in iterative testing mode on a non-production AWS instance
 - [X] save credentials for all users
 - [X] create alias for login url - Issue #2
 - [X] set us-west-2 (Oregon) as default region for UC Berkeley - Issue #7
-- [ ] send temporary password and force changing password at first login
-- [ ] distribute credentials via protected S3 bucket only available after password change at first login
+- [X] distribute credentials via protected S3 bucket only available after password change at first login
+- [ ] force changing password at first login
+- [ ] send temporary password
 - [ ] script for student to self-start EC2 instance with Spark AMI from laptop BCE VM
 - [ ] stricter student policy allowing even more limited EC2 access
   - [ ] Max instance runtime: 4 hours
