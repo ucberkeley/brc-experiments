@@ -14,10 +14,11 @@
 
 import boto
 import json
+from ucb_defaults import DEFAULT_REGION
 
 raise RuntimeError("DANGER! I warned you once... Don't run this script.")
 def destroy(target):
-    response = iam = boto.connect_iam()
+    response = iam = boto.iam.connect_to_region(DEFAULT_REGION)
     try:
         response = alias = iam.get_account_alias().account_aliases
         if alias:
@@ -26,7 +27,7 @@ def destroy(target):
         # if there was an exception, then the account didn't have an alias
         pass
 
-    response = s3 = boto.connect_s3()
+    response = s3 = boto.s3.connect_to_region(DEFAULT_REGION)
     ## only delete bucket names created with uniquify suffix
     ## Further details: https://github.com/ucberkeley/brc-experiments/issues/4
     for b in s3.get_all_buckets():

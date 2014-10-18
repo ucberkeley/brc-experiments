@@ -11,6 +11,7 @@ import re
 import uuid
 
 from iampolicies import apply_policy
+from ucb_defaults import DEFAULT_REGION
 
 def random_string(size=10, chars=string.letters + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -36,7 +37,7 @@ def create_signin_url(target):
     #
     # - AWS account aliases per AWS account: 1
 
-    iam = boto.connect_iam()
+    iam = boto.iam.connect_to_region(DEFAULT_REGION)
     signin_url = "https://{}.signin.aws.amazon.com/console/".format(iam.get_user().user.user_id)
     try:
         response = iam.create_account_alias(target)
@@ -51,14 +52,14 @@ def create_iam_users(target, category):
     email_file = os.path.join(target, category + '.list')
     email_addresses = [r[0] for r in csv.reader(open(email_file))]
 
-    iam = boto.connect_iam()
+    iam = boto.iam.connect_to_region(DEFAULT_REGION)
     group = target + '-' + category
     response = iam.create_group(group)
     resources = ['ec2', 'home']
     for r in resources:
         response = apply_policy(group, category + '-' + r)
 
-    s3 = boto.connect_s3()
+    s3 = boto.s3.connect_to_region(DEFAULT_REGION)
     bucket = s3.get_bucket(target)
 
     data = []

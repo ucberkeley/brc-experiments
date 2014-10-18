@@ -55,6 +55,7 @@ Currently in iterative testing mode on a non-production AWS instance
 - [X] provision users in student group
 - [X] save credentials for all users
 - [X] create alias for login url - Issue #2
+- [X] set us-west-2 (Oregon) as default region for UC Berkeley - Issue #7
 - [ ] send temporary password and force changing password at first login
 - [ ] distribute credentials via protected S3 bucket only available after password change at first login
 - [ ] script for student to self-start EC2 instance with Spark AMI from laptop BCE VM
