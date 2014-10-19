@@ -3,6 +3,7 @@
 import boto
 import os.path
 import csv
+import sys
 
 def send_emails(target):
     content = open(os.path.join(target, 'email.template')).readlines()
@@ -35,5 +36,8 @@ def send_emails(target):
             print body
             pass
 if __name__ == '__main__':
-    target = 'cloud101-fall-2014'
+    if len(sys.argv) > 1:
+        target = sys.argv[1]
+    else:
+        target = 'cloud101-fall-2014'
     send_emails(target)
