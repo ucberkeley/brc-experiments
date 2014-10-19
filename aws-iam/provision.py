@@ -24,7 +24,7 @@ boto.iam.IAMConnection.create_login_profile=monkeypatch.create_login_profile
 def random_string(size=10, chars=string.letters + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
-def create_signin_url(target):
+def create_signin_url(target, uq):
     # The script will also attempt to create a sign-in alias based on the
     # course name, with the following behavior:
     #
@@ -48,13 +48,16 @@ def create_signin_url(target):
     iam = boto.iam.connect_to_region(DEFAULT_REGION)
     signin_url = "https://{}.signin.aws.amazon.com/console/".format(iam.get_user().user.user_id)
     try:
-        response = iam.create_account_alias(target)
+        response = iam.create_account_alias(uq)
         signin_url = iam.get_signin_url()
         signin_url = re.sub(r'/console/.*', '/console', signin_url) # trim to just the essential part
     except boto.exception.BotoServerError, response:
         logging.warn(response.body)
 
     print 'Sign-in url: {}'.format(signin_url)
+    with open(os.path.join(target, 'signin.url'), 'w') as f:
+        f.writelines(signin_url + '\n')
+    return signin_url
 
 credentials_template = """
 [Credentials]
@@ -64,7 +67,7 @@ ssh_key_filename = {}
 ssh_key_fingerprint = {}
 """
 
-def create_iam_users(target, category, bucket_name):
+def create_iam_users(target, category, bucket_name, signin_url):
     email_file = os.path.join(target, category + '.list')
     email_addresses = [r[0] for r in csv.reader(open(email_file))]
 
@@ -124,14 +127,13 @@ def provision(target):
     uniquify = '-uq' + str(uuid.uuid4())[:5]
     uq = target + uniquify
     bucket_name = uq
-    signin_url = uq
-    create_signin_url(signin_url)
+    signin_url = create_signin_url(target, uq)
     s3 = boto.s3.connect_to_region(DEFAULT_REGION)
     ## create bucket names with uniquify suffix
     ## Further details: https://github.com/ucberkeley/brc-experiments/issues/4
     s3.create_bucket(bucket_name, location=DEFAULT_REGION)
     for category in ['instructors','students']:
-        creds = create_iam_users(target, category, bucket_name)
+        creds = create_iam_users(target, category, bucket_name, signin_url)
         save_credentials(target, category, creds)
 
 if __name__ == '__main__':
