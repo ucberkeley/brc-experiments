@@ -66,4 +66,4 @@ course name, with the following behavior:
 
 Currently in iterative testing mode on a non-production AWS instance
 
-    clear; ./destroy.py [class dir name]  && ./provision.py [class dir name]
+    clear; ./destroy.py [class dir name]  && ./provision.py [class dir name]  && ./sendcreds.py [class dir name]
