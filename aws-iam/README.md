@@ -35,7 +35,7 @@ replacing with your own credentials:
 The first time, simply run the following on an Ubuntu (BCE) system:
 
     sudo apt-get install -y python-boto
-    ./provision.py
+    ./provision.py [name of directory (i.e., class name) containing student/instructor lists]
 
 And then check your [AWS console IAM
 dashboard](https://console.aws.amazon.com/iam/home?#home) to see the
@@ -66,4 +66,4 @@ course name, with the following behavior:
 
 Currently in iterative testing mode on a non-production AWS instance
 
-    clear; ./destroy.py && ./provision.py
+    clear; ./destroy.py [class dir name]  && ./provision.py [class dir name]

@@ -14,9 +14,10 @@
 
 import boto, boto.iam, boto.s3, boto.ec2
 import json
+import sys
 from ucb_defaults import DEFAULT_REGION
 
-raise RuntimeError("DANGER! I warned you once... Don't run this script.")
+#raise RuntimeError("DANGER! I warned you once... Don't run this script.")
 def destroy(target):
     response = iam = boto.iam.connect_to_region(DEFAULT_REGION)
     try:
@@ -73,5 +74,8 @@ def destroy(target):
             response = iam.delete_group(group)
 
 if __name__ == '__main__':
-    target = 'cloud101-fall-2014'
+    if len(sys.argv) > 1:
+        target = sys.argv[1]
+    else:
+        target = 'cloud101-fall-2014'
     destroy(target)

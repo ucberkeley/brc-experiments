@@ -8,6 +8,7 @@ import random
 import logging
 import re
 import uuid
+import sys
 
 from custom_policies import apply_policy
 from ucb_defaults import DEFAULT_REGION
@@ -144,5 +145,8 @@ def provision(target):
         save_credentials(target, category, creds)
 
 if __name__ == '__main__':
-    target = 'cloud101-fall-2014'
+    if len(sys.argv) > 1:
+        target = sys.argv[1]
+    else:
+        target = 'cloud101-fall-2014'
     provision(target)
