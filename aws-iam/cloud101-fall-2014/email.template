@@ -1,0 +1,17 @@
+To: {username}
+From: course-email-address@berkeley.edu
+Subject: {course} AWS Console instructions
+
+Connect to the sign-in url: {signin_url}
+Username: {username}
+Password: {password}
+
+You will be required to change your password when you log in.
+
+Once you've signed in you can Download your credentials and ssh key
+from the Amazon Web Services (AWS) Console: https://console.aws.amazon.com/s3/
+
+Navigate to: {home_path}
+
+Download your AWS access and secret keys: {credentials_filename}
+Download your ssh key: {ssh_key_filename}
