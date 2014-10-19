@@ -13,6 +13,15 @@ import uuid
 from custom_policies import apply_policy
 from ucb_defaults import DEFAULT_REGION
 
+# FIXME: Missing feature in current version (2.33) of boto means we
+# need to monkeypatch from upstream until this is merged and available
+# in a standard system release.
+# See: https://github.com/ucberkeley/brc-experiments/pull/1
+# And: https://github.com/boto/boto/pull/2578
+import boto.iam
+import monkeypatch
+boto.iam.IAMConnection.create_login_profile=monkeypatch.create_login_profile
+
 def random_string(size=10, chars=string.letters + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
@@ -92,8 +101,7 @@ def create_iam_users(target, category, bucket_name):
         key = bucket.new_key(path)
         key.set_contents_from_string(ssh_key.material)
         password = random_string()
-        response = iam.create_login_profile(e, password)
-        # response = iam.create_login_profile(e, password, password_reset_required=True)
+        response = iam.create_login_profile(e, password, password_reset_required=True)
         ### The password_reset_required is a new feature in a pull
         ### request waiting to be merged:
         ### https://github.com/boto/boto/pull/2578
