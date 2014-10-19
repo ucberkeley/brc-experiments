@@ -95,12 +95,13 @@ def create_iam_users(target, category, bucket_name, signin_url):
         ssh_key = ec2.create_key_pair(ssh_key_name)
         credentials = credentials_template.format(access_key, secret_key, ssh_key_filename, ssh_key.fingerprint)
         home = "home/{}/".format(e)
+        home_path = bucket_name + "/" + home
         key = bucket.new_key(home)
-        path = home + credentials_filename
-        key = bucket.new_key(path)
+        prefix = home + credentials_filename
+        key = bucket.new_key(prefix)
         key.set_contents_from_string(credentials)
-        path = home + ssh_key_filename
-        key = bucket.new_key(path)
+        prefix = home + ssh_key_filename
+        key = bucket.new_key(prefix)
         key.set_contents_from_string(ssh_key.material)
         password = random_string()
         response = iam.create_login_profile(e, password, password_reset_required=True)
@@ -108,16 +109,22 @@ def create_iam_users(target, category, bucket_name, signin_url):
         ### request waiting to be merged:
         ### https://github.com/boto/boto/pull/2578
 
-        data.append({
-            'username' : e,
-            'access_key' : access_key,
-            'secret_key' : secret_key,
-            'password' : password,
-        })
+        data.append(dict(
+            username=e,
+            access_key=access_key,
+            secret_key=secret_key,
+            password=password,
+            signin_url = signin_url,
+            home_path = home_path,
+            credentials_filename = credentials_filename,
+            ssh_key_filename = ssh_key_filename,
+        ))
     return data
 
 def save_credentials(target, category, creds):
-    keys = ['username', 'access_key', 'secret_key', 'password']
+    keys = ['username', 'password', 'access_key', 'secret_key',
+            'credentials_filename', 'ssh_key_filename', 'home_path',
+            'signin_url']
     f = open(os.path.join(target, category + '.csv'), 'wb')
     dict_writer = csv.DictWriter(f, keys, delimiter='\t')
     dict_writer.writer.writerow(keys)
