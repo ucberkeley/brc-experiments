@@ -8,7 +8,7 @@
 - [X] create alias for login url - [Issue #2](https://github.com/ucberkeley/brc-experiments/issues/2)
 - [X] set us-west-2 (Oregon) as default region for UC Berkeley - [Issue #5](https://github.com/ucberkeley/brc-experiments/issues/5)
 - [X] distribute credentials via protected S3 bucket only available after password change at first login
-- [X] force changing password at first login
+- [X] force changing password at first login - [Issue #1](https://github.com/ucberkeley/brc-experiments/pull/1)
 - [ ] send temporary password
 - [ ] script for student to self-start EC2 instance with Spark AMI from laptop BCE VM
 - [ ] stricter student policy allowing even more limited EC2 access -[Issue #8](https://github.com/ucberkeley/brc-experiments/issues/8)
