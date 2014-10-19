@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import os.path
-import json
 import boto, boto.iam, boto.s3, boto.ec2
 import csv
 import string
