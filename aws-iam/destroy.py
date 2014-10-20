@@ -17,7 +17,7 @@ import json
 import sys
 from ucb_defaults import DEFAULT_REGION
 
-#raise RuntimeError("DANGER! I warned you once... Don't run this script.")
+raise RuntimeError("DANGER! I warned you once... Don't run this script.")
 def destroy(target):
     response = iam = boto.iam.connect_to_region(DEFAULT_REGION)
     try:
