@@ -12,9 +12,8 @@
 # deprovision an IAM environment for experimenting with building a
 # safe way to provision and deprovision IAM accounts.
 
-import boto, boto.iam, boto.s3, boto.ec2
-import json
 import sys
+import boto, boto.iam, boto.s3, boto.ec2
 from ucb_defaults import DEFAULT_REGION
 
 raise RuntimeError("DANGER! I warned you once... Don't run this script.")
