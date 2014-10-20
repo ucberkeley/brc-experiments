@@ -10,7 +10,6 @@
 - [X] distribute credentials via protected S3 bucket only available after password change at first login
 - [X] force changing password at first login - [Issue #1](https://github.com/ucberkeley/brc-experiments/pull/1)
 - [X] email template for temporary password and login instructions
-- [ ] send email via local-SMTP (assigned to @cpaciorek) instead of SES for now - [Issue #9](https://github.com/ucberkeley/brc-experiments/issues/9)
 - [ ] script for student to self-start EC2 instance with Spark AMI from laptop BCE VM
 - [ ] stricter student policy allowing even more limited EC2 access -[Issue #8](https://github.com/ucberkeley/brc-experiments/issues/8)
   - [ ] Max instance runtime: 4 hours
