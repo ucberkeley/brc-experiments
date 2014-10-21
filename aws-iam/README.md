@@ -33,8 +33,15 @@ replacing with your own credentials:
 
 The first time, simply run the following on an Ubuntu (BCE) system:
 
-    sudo apt-get install -y python-boto
+    sudo pip install boto
     ./provision.py [name of directory (i.e., class name) containing student/instructor lists]
+
+Note: a previous version suggested version of this document suggested
+`sudo apt-get install -y python-boto` to install boto, however as of
+this writing, the BCE 1.3 release that uses Ubuntu 14.04 LTS (Trusty)
+only has boto `v2.20.1`, whereas I am now using boto `v2.32.1` which
+is necessary due to
+[differences in the earlier versions](https://github.com/ucberkeley/brc-experiments/issues/11).
 
 And then check your [AWS console IAM
 dashboard](https://console.aws.amazon.com/iam/home?#home) to see the
