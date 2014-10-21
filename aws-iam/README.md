@@ -43,8 +43,10 @@ provisioned
 [groups](https://console.aws.amazon.com/iam/home?#groups),
 and [policies](https://console.aws.amazon.com/iam/home?#groups/cloud101-fall-2014-students).
 
-The script will also attempt to create a sign-in alias based on the
-course name, with the following behavior:
+# Sign-in URL alias limitations
+
+The script will also attempt to create a _unique_ sign-in alias based on the
+course name with a random suffix that starts with `-uq.....`, with the following behavior:
 
 - If your account already has an alias it will leave the existing
   alias in place, it will _not_ overwrite it.
