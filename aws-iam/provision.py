@@ -9,6 +9,7 @@ import logging
 import re
 import uuid
 import sys
+import smtplib
 
 from custom_policies import apply_policy
 from ucb_defaults import DEFAULT_REGION
@@ -58,6 +59,7 @@ def create_signin_url(target, uq):
     print 'Sign-in url: {}'.format(signin_url)
     with open(os.path.join(target, 'signin.url'), 'w') as f:
         f.writelines(signin_url + '\n')
+    print "URL: " + signin_url
     return signin_url
 
 credentials_template = """
@@ -131,6 +133,34 @@ def save_credentials(target, category, creds):
     dict_writer.writer.writerow(keys)
     dict_writer.writerows(creds)
 
+def email_user_passwords(creds, target, from_email):  
+    SMTP_FROM = from_email
+    SMTP_SERVER = 'scf.berkeley.edu'
+    subject = 'Subject: Amazon class account'
+    for user_creds in creds:
+        to = 'To: ' + user_creds['username'] + '\n'
+        fromInfo ='From: ' + SMTP_FROM + '\n'
+        msg = fromInfo + to + subject + '\n\n' + 'Your Amazon class account for ' + target + \
+        ' has been set up.\n' + \
+        'Your username is ' + user_creds['username'] + '.\n' + \
+        'Your one-time password is ' + user_creds['password'] + '.\n' + \
+        'Please log in to ' + user_creds['signin_url'] + ' using the above information.\n' + \
+        'Then change your password as prompted and navigate to the S3 service to' + \
+        ' download your AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and private SSH key.\n'
+        connected = False 
+        while not connected:
+            try:
+                server = smtplib.SMTP(SMTP_SERVER)
+                connected = True
+            except socket.error:
+                time.sleep(60)
+            try:
+                server.sendmail(SMTP_FROM, user_creds['username'], msg)
+                print "Sending notification to: " + user_creds['username'] + '\n'
+            except smtplib.SMTPRecipientsRefused:
+                pass
+
+
 def provision(target):
     uniquify = '-uq' + str(uuid.uuid4())[:5]
     uq = target + uniquify
@@ -143,10 +173,16 @@ def provision(target):
     for category in ['instructors','students']:
         creds = create_iam_users(target, category, bucket_name, signin_url)
         save_credentials(target, category, creds)
+        email_user_passwords(creds, target, from_address)
+
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         target = sys.argv[1]
     else:
         target = 'cloud101-fall-2014'
+    if len(sys.argv) > 2:
+        from_address = sys.argv[2]
+    else:
+        from_address = 'manager@stat.berkeley.edu'
     provision(target)
