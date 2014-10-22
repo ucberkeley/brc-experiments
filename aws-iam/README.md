@@ -23,8 +23,29 @@
 Provision a set of users in AWS IAM with limited delegated access to
 EC2 resources for use in courses, workshops, bootcamps, and hackathons.
 
-# Instructions
+# Preparatory steps
+
+Create the class AWS root account. We've been using
+aws-stat<class number>@stat.berkeley.edu as the email alias for a given class.
+
+Use Ryan's BluCard for payment mechanism.
+
+Request credits from Amazon and apply the resulting credit code to the root account under Billing Management.
+
+Request increase in number of simultaneous instances:
+https://aws.amazon.com/support/createCase?type=service_limit_increase&serviceLimitIncreaseType=ec2-instances
+
+Go to IAM 'Password policy' tab and check box allowing users to change their own passwords.
+
+
+
+
+
+# Instructions for provisioning
 **WARNING:** Do **NOT** run this code on a production system!
+
+Make sure you have set your root account password policy so that
+users can change their own passwords.
 
 Set up your AWS credentials with boto by copying the example and
 replacing with your own credentials:
@@ -35,7 +56,7 @@ replacing with your own credentials:
 The first time, simply run the following on an Ubuntu (BCE) system:
 
     sudo apt-get install -y python-boto
-    ./provision.py [name of directory (i.e., class name) containing student/instructor lists]
+    ./provision.py [name of directory (i.e., class name) containing student/instructor lists] [email address from which emails to users should be sent]
 
 And then check your [AWS console IAM
 dashboard](https://console.aws.amazon.com/iam/home?#home) to see the
@@ -66,4 +87,4 @@ course name, with the following behavior:
 
 Currently in iterative testing mode on a non-production AWS instance
 
-    clear; ./destroy.py [class dir name]  && ./provision.py [class dir name]  && ./sendcreds.py [class dir name]
+    clear; ./destroy.py [class dir name]  && ./provision.py [class dir name] [from email]
