@@ -1,0 +1,17 @@
+From: aws-stat157@stat.berkeley.edu
+To: ${username}
+Subject: AWS account instructions: ${target}
+
+Please log in to the course console:
+
+    Sign-in URL: ${url}
+    Username: ${username}
+    One-time password: ${password}
+
+You will be required to change your password the first time you log in.
+
+Go to Services > S3 and download your credentials and ssh key from bucket
+${home_path}.
+
+Your AWS access and secret keys: ${creds_file}
+Your ssh key: ${ssh_key}
