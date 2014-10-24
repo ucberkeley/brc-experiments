@@ -19,14 +19,13 @@ from ucb_defaults import DEFAULT_REGION
 # in a standard system release.
 # See: https://github.com/ucberkeley/brc-experiments/pull/1
 # And: https://github.com/boto/boto/pull/2578
-import boto.iam
 import monkeypatch
 boto.iam.IAMConnection.create_login_profile=monkeypatch.create_login_profile
 
 def random_string(size=10, chars=string.letters + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
-def create_signin_url(target, uq):
+def create_signin_url(iam, target, uq):
     # The script will also attempt to create a sign-in alias based on the
     # course name, with the following behavior:
     #
@@ -47,8 +46,8 @@ def create_signin_url(target, uq):
     #
     # - AWS account aliases per AWS account: 1
 
-    iam = boto.iam.connect_to_region(DEFAULT_REGION)
     signin_url = "https://{}.signin.aws.amazon.com/console/".format(iam.get_user().user.user_id)
+
     try:
         response = iam.create_account_alias(uq)
         signin_url = iam.get_signin_url()
@@ -76,7 +75,11 @@ def create_iam_users(target, category, bucket_name, signin_url):
 
     iam = boto.iam.connect_to_region(DEFAULT_REGION)
     group = target + '-' + category
-    response = iam.create_group(group)
+    try:
+        response = iam.create_group(group)
+    except boto.exception.BotoServerError, x:
+        print 'Warning: Skipping error on create_group:', group
+
     resources = ['ec2', 'home']
     for r in resources:
         response = apply_policy(group, category + '-' + r, bucket_name)
@@ -86,7 +89,11 @@ def create_iam_users(target, category, bucket_name, signin_url):
 
     data = []
     for e in email_addresses:
-        response = iam.create_user(e)
+        try:
+            response = iam.create_user(e)
+        except boto.exception.BotoServerError, x:
+            print 'Warning: Skipping error on create_user:', e
+            continue
         response = iam.add_user_to_group(group, e)
         response = iam.create_access_key(e)
         access_key = response.access_key_id
@@ -95,7 +102,11 @@ def create_iam_users(target, category, bucket_name, signin_url):
         ssh_key_name = e + ':' + target
         ssh_key_filename = target + '-ssh_key.pem'
         credentials_filename = target + '-credentials.boto'
-        ssh_key = ec2.create_key_pair(ssh_key_name)
+        try:
+            ssh_key = ec2.create_key_pair(ssh_key_name)
+        except boto.exception.BotoServerError, x:
+            print 'Warning: Skipping error on create_key_pair:', ssh_key_name
+            continue
         credentials = credentials_template.format(access_key, secret_key, ssh_key_filename, ssh_key.fingerprint)
         home = "home/{}/".format(e)
         home_path = bucket_name + "/" + home
@@ -128,7 +139,7 @@ def save_credentials(target, category, creds):
     keys = ['username', 'password', 'access_key', 'secret_key',
             'credentials_filename', 'ssh_key_filename', 'home_path',
             'signin_url']
-    f = open(os.path.join(target, category + '.csv'), 'wb')
+    f = open(os.path.join(target, category + '.csv'), 'ab')
     dict_writer = csv.DictWriter(f, keys, delimiter='\t')
     dict_writer.writer.writerow(keys)
     dict_writer.writerows(creds)
@@ -161,28 +172,45 @@ def email_user_passwords(creds, target, from_email):
                 pass
 
 
-def provision(target):
-    uniquify = '-uq' + str(uuid.uuid4())[:5]
-    uq = target + uniquify
+def provision(args):
+    iam = boto.iam.connect_to_region(DEFAULT_REGION)
+    try:
+        response = iam.get_account_alias()
+        uq = response['list_account_aliases_response']['list_account_aliases_result']['account_aliases'][0]
+        print 'UQ (exists): ' + uq
+        signin_url = "https://%s.signin.aws.amazon.com/console/" % uq
+    except Exception, e:
+        uniquify = '-uq' + str(uuid.uuid4())[:5]
+        uq = args.target + uniquify
+        print 'UQ (new): ' + uq
+        signin_url = create_signin_url(iam, args.target, uq)
+
     bucket_name = uq
-    signin_url = create_signin_url(target, uq)
+
     s3 = boto.s3.connect_to_region(DEFAULT_REGION)
     ## create bucket names with uniquify suffix
     ## Further details: https://github.com/ucberkeley/brc-experiments/issues/4
-    s3.create_bucket(bucket_name, location=DEFAULT_REGION)
+    try:
+        s3.create_bucket(bucket_name, location=DEFAULT_REGION)
+    except:
+        pass
+
     for category in ['instructors','students']:
-        creds = create_iam_users(target, category, bucket_name, signin_url)
-        save_credentials(target, category, creds)
-        email_user_passwords(creds, target, from_address)
+        creds = create_iam_users(args.target, category, bucket_name, signin_url)
+        save_credentials(args.target, category, creds)
+        if args.email: email_user_passwords(creds, args.target, args.sender)
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        target = sys.argv[1]
-    else:
-        target = 'cloud101-fall-2014'
-    if len(sys.argv) > 2:
-        from_address = sys.argv[2]
-    else:
-        from_address = 'manager@stat.berkeley.edu'
-    provision(target)
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('target', nargs='?', default='cloud101-fall-2014',
+        metavar='course')
+    parser.add_argument('-e', '--email', action='store_true',
+        help='Email credentials.')
+    parser.add_argument('-s', '--sender', default='manager@stat.berkeley.edu',
+        metavar='address', help='Email address to send credentials from.')
+    args = parser.parse_args()
+
+    provision(args)
