@@ -15,3 +15,6 @@ ${home_path}.
 
 Your AWS access and secret keys: ${creds_file}
 Your ssh key: ${ssh_key}
+
+If you need assistance with your AWS account, please email
+aws-support@stat.berkeley.edu.
