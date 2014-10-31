@@ -195,7 +195,8 @@ def provision(args):
     except:
         pass
 
-    for category in ['instructors','students']:
+#    for category in ['instructors','students']:
+    for category in ['instructors']:
         creds = create_iam_users(args.target, category, bucket_name, signin_url)
         save_credentials(args.target, category, creds)
         if args.email: email_user_passwords(creds, args.target, args.sender)

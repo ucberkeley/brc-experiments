@@ -38,7 +38,7 @@ https://aws.amazon.com/support/createCase?type=service_limit_increase&serviceLim
 
 Go to IAM 'Password policy' tab and check box allowing users to change their own passwords.
 
-
+Make sure the default VPC security group (if one is going to direct students to use that) has inbound rule of Type: SSH, Protocol: TCP, Port Range: 22, Source: Anywhere 0.0.0.0/0
 
 
 
