@@ -40,6 +40,9 @@ Go to IAM 'Password policy' tab and check box allowing users to change their own
 
 Make sure the default VPC security group (if one is going to direct students to use that) has inbound rule of Type: SSH, Protocol: TCP, Port Range: 22, Source: Anywhere 0.0.0.0/0
 
+Tell students not to make their AWS credentials public in any way, including public Github repositories.
+
+Disable the ability to start instances in regions other than Oregon to reduce possibility of undetected fraud.
 
 
 # Instructions for provisioning
