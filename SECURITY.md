@@ -10,7 +10,9 @@ If you do not keep your credentials **Safe & Secure**, for example if you upload
 
 In fact, the Bad Guys are continuously scanning for credentials everywhere and will find them almost immediately as soon as they are exposed.
 
-Then the Bad Guys will take over all available resources and drain them until they are discovered. They might even destroy your homework.
+Then the Bad Guys will take over all available resources and drain them until they are discovered to be stealing resources and we can revoke your stolen credentials and kick out the Bad Guys.
+
+**They might even destroy your homework.**
 
 ## Oops!
 
@@ -37,7 +39,7 @@ If you've uploaded your credentials somewhere or exposed them somehow, whether b
 
 **Don't worry!**
 
-Just **be responsible** and let us know right away at [aws-support@stat.berkeley.edu](mailto:aws-support@stat.berkeley.edu) so that we can immediately revoke the credentials to keep the bad guys out of the system.
+Just **be responsible** by letting us know right away at [aws-support@stat.berkeley.edu](mailto:aws-support@stat.berkeley.edu) so that we can immediately revoke the credentials to keep the bad guys out of the system.
 
 ## More Details
 
