@@ -31,6 +31,14 @@ Your credentials come in two files with the following suffixes in their name:
 - Don't share your credentials with anybody else, even temporarily.
 - Do not make a copy or snapshot of your VM (Virtual Machine) to share with others because your credentials will also be copied along with the rest of the VM image.
 
+## Confess! Admit it! Everyone makes mistakes
+
+If you've uploaded your credentials somewhere or exposed them somehow, whether because you didn't know better, you didn't think the Bad Guys would find them, or you just made a mistake then...
+
+**Don't worry!**
+
+Just **be responsible** and let us know right away at [aws-support@stat.berkeley.edu](mailto:aws-support@stat.berkeley.edu) so that we can immediately revoke the credentials to keep the bad guys out of the system.
+
 ## More Details
 
 If you'd like to know more about security, you're welcome to explore
