@@ -1,10 +1,12 @@
 Currently experimenting with:
 
-- [ ] [Leveraging campus contract for AWS](https://github.com/ucberkeley/brc-experiments/tree/master/aws-campus-contract)
-  - a collaboration with Isaac Orr and IST-Telecommunications
+- [ ]
+  [Leveraging campus contract for AWS](https://github.com/ucberkeley/brc-experiments/tree/master/aws-campus-contract),
+  a collaboration with Isaac Orr and IST-Telecommunications
 
-- [ ] [Deploying & delegating AWS resources](https://github.com/ucberkeley/brc-experiments/tree/master/aws-iam)
-  - a collaboration with [Chris Paciorek](https://github.com/paciorek)
+- [ ]
+  [Deploying & delegating AWS resources](https://github.com/ucberkeley/brc-experiments/tree/master/aws-iam),
+  a collaboration with [Chris Paciorek](https://github.com/paciorek)
   (Statstics researcher, lecturer and SCF staff)
   and [Ryan Lovett](https://github.com/bagofmostlywater) (SCF staff) that enables:
   - requesting and using AWS grants for research and teaching
