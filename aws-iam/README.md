@@ -1,3 +1,7 @@
+# Use Case
+Provision a set of users in AWS IAM with limited delegated access to
+EC2 resources for use in courses, workshops, bootcamps, and hackathons.
+
 # TODO
 - [X] default student policy allowing limited EC2 access
 - [X] default instructor policy allowing full account access
@@ -17,10 +21,6 @@
   - [ ] default instance type for Spark: 8GB, 2 core
   - [ ] allow optional instance types up to a limit of: 16GB, 8 cores
 - [ ] handle SES From address verification and requesting production access from Amazon - [Issue #9](https://github.com/ucberkeley/brc-experiments/issues/9)
-
-# Use Case
-Provision a set of users in AWS IAM with limited delegated access to
-EC2 resources for use in courses, workshops, bootcamps, and hackathons.
 
 # Instructions
 **WARNING:** Do **NOT** run this code on a production system!

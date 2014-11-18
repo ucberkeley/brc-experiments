@@ -1,14 +1,3 @@
-# TODO
-- [X] unix group 'bceadm' on the SAVIO cluster
-- [X] directory to start installing BCE software stack on Savio
-  - temporarily located at `/global/home/groups/BCE`
-- [ ] building packages in BCE directory
-- [ ] create versioned BCE modules like `bce/0.1.3`
-- [ ] make versioned BCE modules visible to all Savio users
-- [ ] permanent location for the BCE stack with backups and proper access
-  - [ ] will BCE module installation and maintenance be handled by non-BRC staff (e.g. SCF / D-Lab)?
-- [ ] BCE requirements spec for future BCE releases
-
 # Use Case
 
 Access from [UC Berkeley's Institutional HPC Cluster
@@ -21,6 +10,17 @@ and Statistics, as bundled in the [Berkeley Compute Environment
 which allows mobilitiy of compute so that software developed on a
 laptop virtual machine (VM) will run on the HPC cluster without
 further work by end users.
+
+# TODO
+- [X] unix group 'bceadm' on the SAVIO cluster
+- [X] directory to start installing BCE software stack on Savio
+  - temporarily located at `/global/home/groups/BCE`
+- [ ] building packages in BCE directory
+- [ ] create versioned BCE modules like `bce/0.1.3`
+- [ ] make versioned BCE modules visible to all Savio users
+- [ ] permanent location for the BCE stack with backups and proper access
+  - [ ] will BCE module installation and maintenance be handled by non-BRC staff (e.g. SCF / D-Lab)?
+- [ ] BCE requirements spec for future BCE releases
 
 # Instructions
 
