@@ -1,0 +1,61 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "management",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:Describe*",
+                "ec2:CreateTags"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "s3",
+            "Effect": "Allow",
+            "Action": "*",
+            "Resource": "arn:aws:s3:::*"
+        },
+        {
+            "Sid": "ec2run",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:RunInstances"
+            ],
+            "Resource": [
+                "arn:aws:ec2:us-west-2:407499771658:instance/*",
+                "arn:aws:ec2:us-west-2:407499771658:key-pair/*",
+                "arn:aws:ec2:us-west-2:407499771658:security-group/sg-a482e4c1",
+                "arn:aws:ec2:us-west-2:407499771658:volume/*",
+                "arn:aws:ec2:us-west-2:407499771658:network-interface/*",
+                "arn:aws:ec2:us-west-2:407499771658:vpc/*",
+                "arn:aws:ec2:us-west-2:407499771658:subnet/*",
+                "arn:aws:ec2:us-west-2::image/ami-*"
+            ]
+        },
+        {
+            "Sid": "ec2term",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:TerminateInstances",
+                "ec2:StopInstances",
+                "ec2:StartInstances"
+            ],
+            "Resource": "arn:aws:ec2:us-west-2:407499771658:instance/*"
+        },
+        {
+            "Sid": "ec2type",
+            "Effect": "Deny",
+            "Action": "ec2:RunInstances",
+            "Condition": {
+                "StringNotEquals": {
+                    "ec2:InstanceType": [
+                        "t2.micro",
+                        "t2.small"
+                    ]
+                }
+            },
+            "Resource": "arn:aws:ec2:us-west-2:407499771658:instance/*"
+        }
+    ]
+}

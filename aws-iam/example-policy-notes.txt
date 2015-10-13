@@ -1,0 +1,7 @@
+Some words of wisdom:
+
+1) need to allow CreateTags as EC2 console tries to add a 'Name' tag. For some reason, it only complains about not being able to apply the tag if there is _also_ a stanza pertaining to terminating instances. EC2 documentation says allowing CreateTags is a bad idea because it allows users to change tags and get around tag-level limits, but at this stage I have other fish to fry. 
+
+2) The use of a specific security group will prevent having a class of students with each creating their own security group for every instance launch and hitting EC2's limit on security groups in an account.
+
+3) I needed an explicit statement allowing Terminate,Stop,Start instances to be able to modify running instances. But per #1, once I added this, I needed the CreateTags.  
