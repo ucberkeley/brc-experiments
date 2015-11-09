@@ -174,16 +174,20 @@ def email_user_passwords(creds, target, from_email):
 
 def provision(args):
     iam = boto.iam.connect_to_region(DEFAULT_REGION)
-    try:
-        response = iam.get_account_alias()
-        uq = response['list_account_aliases_response']['list_account_aliases_result']['account_aliases'][0]
-        print 'UQ (exists): ' + uq
-        signin_url = "https://%s.signin.aws.amazon.com/console/" % uq
-    except Exception, e:
-        uniquify = '-uq' + str(uuid.uuid4())[:5]
-        uq = args.target + uniquify
-        print 'UQ (new): ' + uq
-        signin_url = create_signin_url(iam, args.target, uq)
+    if signin_url == None:
+        try:
+            response = iam.get_account_alias()
+            uq = response['list_account_aliases_response']['list_account_aliases_result']['account_aliases'][0]
+            print 'UQ (exists): ' + uq
+            signin_url = "https://%s.signin.aws.amazon.com/console/" % uq
+        except Exception, e:
+            uniquify = '-uq' + str(uuid.uuid4())[:5]
+            uq = args.target + uniquify
+            print 'UQ (new): ' + uq
+            signin_url = create_signin_url(iam, args.target, uq)
+    else:
+        uq = signin_url
+        signin_url = 'https://' + signin_url + '.signin.aws.amazon.com/console'
 
     bucket_name = uq
 
@@ -195,8 +199,7 @@ def provision(args):
     except:
         pass
 
-#    for category in ['instructors','students']:
-    for category in ['instructors',]:
+    for category in ['instructors','students']:
         creds = create_iam_users(args.target, category, bucket_name, signin_url)
         save_credentials(args.target, category, creds)
         if args.email: email_user_passwords(creds, args.target, args.sender)
@@ -214,4 +217,4 @@ if __name__ == '__main__':
         metavar='address', help='Email address to send credentials from.')
     args = parser.parse_args()
 
-    provision(args)
+    provision(args, 'berkeley-scf')
