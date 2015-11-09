@@ -1,0 +1,8 @@
+## add this too
+
+        {
+            "Sid": "createGroup",
+            "Effect": "Allow",
+            "Action": "ec2:CreateSecurityGroup",
+            "Resource": "*"
+        },
